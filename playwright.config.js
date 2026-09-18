@@ -3,6 +3,11 @@ const { defineConfig } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './tests',
 
+  reporter: [
+    ['list'],
+    ['json', { outputFile: 'test-results/results.json' }]
+  ],
+
   use: {
     baseURL: 'http://127.0.0.1:3000',
     headless: true,
