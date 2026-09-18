@@ -1,6 +1,7 @@
 name: QA Login Automation
 
 on:
+ 
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -33,3 +34,15 @@ jobs:
           name: playwright-results
           path: test-results/results.json
           retention-days: 7
+
+      - name: Notify n8n on test failure
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "pr_number": "${{ github.event.pull_request.number }}",
+              "branch": "${{ github.head_ref }}",
+              "run_id": "${{ github.run_id }}",
+              "status": "FAIL"
+            }'
